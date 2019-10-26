@@ -2,7 +2,7 @@ import GildedRose
 
 let items = [
     Item(name: "+5 Dexterity Vest", sellIn: 10, quality: 20),
-    Item(name: "Aged Brie", sellIn: 2, quality: 0),
+    Item(name: "Aged Brie", sellIn: 2, quality: 48),
     Item(name: "Elixir of the Mongoose", sellIn: 5, quality: 7),
     Item(name: "Sulfuras, Hand of Ragnaros", sellIn: 0, quality: 80),
     Item(name: "Sulfuras, Hand of Ragnaros", sellIn: -1, quality: 80),
@@ -22,7 +22,7 @@ if (CommandLine.argc > 1) {
 for i in 0..<days {
     print("-------- day \(i) --------");
     print("name, sellIn, quality");
-    for item in items {
+    for item in app.items {
         print(item);
     }
     print("");
