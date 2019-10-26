@@ -11,6 +11,10 @@ class GildedRoseTests: XCTestCase {
         app.updateQuality();
         XCTAssertEqual("fixme", app.items[0].name);
     }
+
+    func testBrieIncrements(){
+        // Given I have some delicious aged brie
+    }
 }
 
 #if os(Linux)

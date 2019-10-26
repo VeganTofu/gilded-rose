@@ -5,7 +5,7 @@ enum GuildedItemType {
     sulfuras,
     agedBrie,
     conjured,
-    none;
+    standard;
 }
 
 extension GuildedItemType{
@@ -15,18 +15,18 @@ extension GuildedItemType{
             case let str where str.contains("sulfuras"): self = .sulfuras
             case let str where str.contains("backstage"): self = .backStage
             case let str where str.contains("conjured"): self = .conjured
-            default: self = .none
+            default: self = .standard
         }
     }
     
-    func quantity(_ sellIn:Int,_ currentQuantity:Int) -> Int {
+    func quality(_ sellIn:Int,_ currentQuantity:Int) -> Int {
         if (self == .backStage && sellIn <= 0) {
             return 0
         }
-        return currentQuantity + incrementalQuantity(sellIn)
+        return currentQuantity + incrementalQuality(sellIn)
     }
     
-    private func incrementalQuantity(_ sellIn:Int) -> Int {
+    private func incrementalQuality(_ sellIn:Int) -> Int {
         switch self {
             case .backStage:
                 return concertQuality(sellIn)
@@ -52,6 +52,9 @@ extension GuildedItemType{
     
     private func concertQuality(_ sellIn:Int) -> Int {
         switch sellIn {
+        // Quality increases by 1 when there are at least 10 days
+        case (_) where sellIn > 10:
+            return 1
         // Quality increases by 2 when there are 10 days
         case (6...10):
             return 2
@@ -63,25 +66,4 @@ extension GuildedItemType{
         }
     }
 
-}
-
-struct GuildedItem {
-    let item:Item
-    private let type:GuildedItemType
-    private let maxQuality = 50
-
-    func copyItem() -> Item {
-        let newSellIn = item.sellIn - 1
-        let newQuantity = type.quantity(newSellIn, item.quality)
-        return Item(name: item.name,
-                    sellIn: newSellIn,
-                    quality: newQuantity >= maxQuality ? maxQuality : newQuantity)
-    }
-}
-
-extension GuildedItem {
-    init(item:Item){
-        self.item = item
-        self.type = GuildedItemType(item.name)
-    }
 }
