@@ -9,11 +9,10 @@ public class GildedRose {
     
     public func updateQuality() {
         for item in items {
-            let type = GuildedItemType(item.name)
+            let type = GildedItemType(item.name)
             let newSellIn = item.sellIn - 1
-            let newQuality = type.quality(newSellIn, item.quality)
+            item.quality = type.quality(newSellIn, item.quality, 50, -1)
             item.sellIn = newSellIn
-            item.quality = newQuality >= 50 ? maxQuality : newQuality
         }
     }
 }

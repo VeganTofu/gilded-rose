@@ -1,6 +1,6 @@
 import Foundation
 
-enum GuildedItemType {
+enum GildedItemType {
     case backStage,
     sulfuras,
     agedBrie,
@@ -8,45 +8,43 @@ enum GuildedItemType {
     standard;
 }
 
-extension GuildedItemType{
+extension GildedItemType{
     init(_ value: String) {
         switch value.lowercased() {
+            case let str where str.contains("conjured"): self = .conjured
             case let str where str.contains("aged brie"): self = .agedBrie
             case let str where str.contains("sulfuras"): self = .sulfuras
             case let str where str.contains("backstage"): self = .backStage
-            case let str where str.contains("conjured"): self = .conjured
             default: self = .standard
         }
     }
     
-    func quality(_ sellIn:Int,_ currentQuantity:Int) -> Int {
+    func quality(_ sellIn:Int,_ currentQuantity:Int, _ maxQuality:Int, _ baseDecrement:Int = -1) -> Int {
         if (self == .backStage && sellIn <= 0) {
             return 0
         }
-        return currentQuantity + incrementalQuality(sellIn)
+        if (self == .sulfuras){
+            return 80
+        }
+        let newQuality = currentQuantity + incrementalQuality(sellIn, baseDecrement)
+        if newQuality < 0 {
+            return 0
+            } 
+            else {
+                return  newQuality >= maxQuality ? maxQuality : newQuality
+        }
     }
     
-    private func incrementalQuality(_ sellIn:Int) -> Int {
+    private func incrementalQuality(_ sellIn:Int, _ baseDecrement:Int = -1) -> Int {
         switch self {
             case .backStage:
                 return concertQuality(sellIn)
-            // aged brie increases in quality
             case .agedBrie:
                 return 1
-            case .sulfuras:
-                return 0
             case .conjured:
-                if sellIn < 0 {
-                    return -4
-                } else {
-                    return -2
-                }
+                return sellIn < 0 ? baseDecrement * 4 : baseDecrement * 2
             default:
-                if sellIn < 0 {
-                    return -2
-                } else {
-                    return -1
-                }
+                return sellIn < 0 ? baseDecrement * 2 : baseDecrement
         }
     }
     
